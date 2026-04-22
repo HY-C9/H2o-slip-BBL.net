@@ -106,9 +106,7 @@
       <a href="https://hy-c9.github.io/H2o-slip-SCB.net/" class="sidebar-link"><img src="assets/image/logo1/p-scb.png" class="sidebar-icon-img"> สลิป ไทยพาณิชย์</a>
       <a href="https://hy-c9.github.io/H2o-slip-KTB.net/" class="sidebar-link"><img src="assets/image/logo1/p-kt.png" class="sidebar-icon-img"> สลิป กรุงไทย</a>
       <a href="https://hy-c9.github.io/H2o-slip-BAY.net/" class="sidebar-link"><img src="assets/image/logo1/p-kung.png" class="sidebar-icon-img"> สลิป กรุงศรี</a>
-        
       <a href="https://hy-c9.github.io/H2o-slip-BBL.net/" class="sidebar-link active"><img src="assets/image/logo1/p-bl.png" class="sidebar-icon-img"> สลิป กรุงเทพ</a>
-        
       <a href="https://hy-c9.github.io/H2o-slip-TTB.net/" class="sidebar-link"><img src="assets/image/logo1/p-ttb.png" class="sidebar-icon-img"> สลิป TTB</a>
       <a href="https://hy-c9.github.io/H2o-slip-GSB.net/" class="sidebar-link"><img src="assets/image/logo1/p-o.png" class="sidebar-icon-img"> สลิป ออมสิน</a>
       <a href="https://hy-c9.github.io/H2o-slip-KKP.net/" class="sidebar-link"><img src="assets/image/logo1/p-kpp.png" class="sidebar-icon-img"> สลิป KKP</a>
@@ -154,6 +152,22 @@
       <div class="row g-3">
         
         <div class="col-lg-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                <div class="text-warning fw-medium" style="font-size: 0.85rem;"><i class="bi bi-lightning-charge-fill"></i> เมนูด่วน</div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-danger py-1 px-2" style="font-size: 0.75rem;" onclick="clearForm()" title="ล้างค่าทั้งหมด">
+                        <i class="bi bi-trash"></i> ล้าง
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary py-1 px-2" style="font-size: 0.75rem;" onclick="saveFavorite()" title="บันทึกรายการปัจจุบัน">
+                        <i class="bi bi-bookmark-plus"></i> บันทึกไว้
+                    </button>
+                    <button class="btn btn-sm btn-warning py-1 px-2 fw-bold text-dark" style="font-size: 0.75rem;" onclick="loadFavorite()" title="โหลดรายการที่บันทึกไว้">
+                        <i class="bi bi-star-fill"></i> ใช้รายการโปรด
+                    </button>
+                </div>
+            </div>
+
             <div class="alert-custom">
                  000-0-xxx000   ㅤㅤ(10ตัว)<br>
                  000-0-xxxxx0-00   ㅤㅤ(12ตัว)<br>
@@ -193,7 +207,8 @@
                         <select class="form-select" id="bank" name="bank" onchange="if(window.autoFormatAccount) window.autoFormatAccount(); if(window.updateDisplay) window.updateDisplay();">
                             <option value="ธนาคารกสิกรไทย">ธ.กสิกรไทย</option>
                             <option value="ธนาคารกรุงไทย">ธ.กรุงไทย</option>
-                            <option value="ธนาคารกรุงเทพ" selected>ธ.กรุงเทพ</option> <option value="ธนาคารไทยพาณิชย์">ธ.ไทยพาณิชย์</option>
+                            <option value="ธนาคารกรุงเทพ" selected>ธ.กรุงเทพ</option> 
+                            <option value="ธนาคารไทยพาณิชย์">ธ.ไทยพาณิชย์</option>
                             <option value="ธนาคารกรุงศรีอยุธยา">ธ.กรุงศรีอยุธยา</option>
                             <option value="ธนาคารทหารไทยธนชาต">ธ.ทหารไทยธนชาต</option>
                             <option value="ธนาคารออมสิน">ธ.ออมสิน</option>
@@ -314,6 +329,80 @@
             window.updateDisplay();
         }
     }
+
+    // --------------------------------------------------------
+    // ฟังก์ชัน: การจัดการ เมนูด่วน (Clear / Save / Load)
+    // --------------------------------------------------------
+    const STORAGE_KEY = 'slipFav_BBL_1';
+
+    window.clearForm = function() {
+        if(document.getElementById('AideMemoire')) document.getElementById('AideMemoire').value = 'ค่าเหล้า ค่าเบียร์';
+        if(document.getElementById('sendername')) document.getElementById('sendername').value = 'น.ส. บุษบา';
+        if(document.getElementById('senderaccount')) document.getElementById('senderaccount').value = '869-3-xxx302';
+        if(document.getElementById('receivername')) document.getElementById('receivername').value = 'นาย กบ เขียด';
+        if(document.getElementById('receiveraccount')) document.getElementById('receiveraccount').value = '426-1-xxx426';
+        if(document.getElementById('amount11')) document.getElementById('amount11').value = '3,300.00';
+        
+        if(document.getElementById('bank')) document.getElementById('bank').selectedIndex = 2; // ธนาคารกรุงเทพ
+        if(document.getElementById('imageSelect')) document.getElementById('imageSelect').selectedIndex = 0;
+        
+        const mc = document.getElementById('modeSwitch');
+        if(mc && mc.checked) {
+            mc.checked = false;
+            toggleMode();
+        }
+        
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('datetime').value = now.toISOString().slice(0, 19);
+        
+        if(window.updateDisplay) window.updateDisplay();
+        alert('✨ ล้างข้อมูลกลับเป็นค่าเริ่มต้นเรียบร้อยแล้ว');
+    };
+
+    window.saveFavorite = function() {
+        const favData = {
+            noteMode: document.getElementById('modeSwitch') ? document.getElementById('modeSwitch').checked : false,
+            noteText: document.getElementById('AideMemoire') ? document.getElementById('AideMemoire').value : '',
+            sName: document.getElementById('sendername') ? document.getElementById('sendername').value : '',
+            sAccount: document.getElementById('senderaccount') ? document.getElementById('senderaccount').value : '',
+            rName: document.getElementById('receivername') ? document.getElementById('receivername').value : '',
+            rAccount: document.getElementById('receiveraccount') ? document.getElementById('receiveraccount').value : '',
+            bank: document.getElementById('bank') ? document.getElementById('bank').value : '',
+            amount: document.getElementById('amount11') ? document.getElementById('amount11').value : '',
+            sticker: document.getElementById('imageSelect') ? document.getElementById('imageSelect').value : ''
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(favData));
+    };
+
+    window.loadFavorite = function() {
+        const savedStr = localStorage.getItem(STORAGE_KEY);
+        if (savedStr) {
+            const favData = JSON.parse(savedStr);
+            
+            if(favData.noteMode !== undefined) {
+                const mc = document.getElementById('modeSwitch');
+                if (mc) {
+                    mc.checked = favData.noteMode;
+                    if(typeof toggleMode === 'function') toggleMode();
+                }
+            }
+            if(favData.noteText && document.getElementById('AideMemoire')) document.getElementById('AideMemoire').value = favData.noteText;
+            
+            if(favData.sName && document.getElementById('sendername')) document.getElementById('sendername').value = favData.sName;
+            if(favData.sAccount && document.getElementById('senderaccount')) document.getElementById('senderaccount').value = favData.sAccount;
+            if(favData.rName && document.getElementById('receivername')) document.getElementById('receivername').value = favData.rName;
+            if(favData.rAccount && document.getElementById('receiveraccount')) document.getElementById('receiveraccount').value = favData.rAccount;
+            
+            if(favData.bank && document.getElementById('bank')) document.getElementById('bank').value = favData.bank;
+            if(favData.amount && document.getElementById('amount11')) document.getElementById('amount11').value = favData.amount;
+            if(favData.sticker && document.getElementById('imageSelect')) document.getElementById('imageSelect').value = favData.sticker;
+            
+            if(window.updateDisplay) window.updateDisplay();
+        } else {
+            alert('⚠️ คุณยังไม่ได้บันทึกรายการโปรดไว้เลยครับ');
+        }
+    };
 </script>
 
 <script src="js/slipkbbl.js"></script>
