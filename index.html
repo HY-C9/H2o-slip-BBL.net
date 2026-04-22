@@ -372,6 +372,7 @@
             sticker: document.getElementById('imageSelect') ? document.getElementById('imageSelect').value : ''
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(favData));
+        alert('⭐ บันทึกรายการนี้เป็น "รายการโปรด" เรียบร้อยแล้ว!');
     };
 
     window.loadFavorite = function() {
@@ -399,7 +400,7 @@
             
             if(window.updateDisplay) window.updateDisplay();
         } else {
-            alert('⚠️ คุณยังไม่ได้บันทึกรายการโปรดไว้เลยครับ');
+            alert('⚠️ คุณยังไม่ได้บันทึกรายการโปรด');
         }
     };
 </script>
